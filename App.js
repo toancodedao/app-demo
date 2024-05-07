@@ -1,14 +1,17 @@
-import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
+import {NotifierWrapper} from 'react-native-notifier';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+
+import AppNavigator from './AppNavigator';
 
 const App = () => {
   return (
-    <View>
-      <Text>App</Text>
-    </View>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <NotifierWrapper>
+        <AppNavigator />
+      </NotifierWrapper>
+    </GestureHandlerRootView>
   );
 };
 
 export default App;
-
-const styles = StyleSheet.create({});
