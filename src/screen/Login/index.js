@@ -1,2 +1,3 @@
 import LoginScreen from './LoginScreen';
-export {LoginScreen};
+import LoginSchema from './LoginSchema';
+export {LoginScreen, LoginSchema};
