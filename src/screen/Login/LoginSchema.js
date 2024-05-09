@@ -2,12 +2,11 @@ import * as Yup from 'yup';
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string()
-    .email('Không đúng định dạng email')
-    .required('Thông tin bắt buộc'),
+    .email('Incorrect email format')
+    .required('Required Information'),
   password: Yup.string()
-    .trim()
-    .min(6, 'Mật khẩu quá ngắn')
-    .required('Thông tin bắt buộc'),
+    .min(6, 'Password is too short')
+    .required('Required Information'),
 });
 
 export default LoginSchema;

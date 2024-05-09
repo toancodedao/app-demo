@@ -12,7 +12,20 @@ import Feather from 'react-native-vector-icons/Feather';
 import {colors, fontSize} from '../theme';
 
 const InputLogin = (
-  {title, placeholder, icon, handleSecureText, secureText, ...rest},
+  {
+    name,
+    title,
+    placeholder,
+    icon,
+    handleSecureText,
+    secureText,
+    handleChange,
+    handleBlur,
+    touched,
+    setFieldValue,
+    errors,
+    ...rest
+  },
   ref,
 ) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -21,7 +34,7 @@ const InputLogin = (
     setIsFocused(true);
   };
 
-  const handleBlur = () => {
+  const onBlur = () => {
     setIsFocused(false);
   };
 
@@ -39,9 +52,10 @@ const InputLogin = (
           style={styles.txtInput}
           ref={ref}
           placeholderTextColor={colors.gray_C4C4C4}
-          onBlur={handleBlur}
+          onBlur={(handleBlur(name), onBlur)}
           onFocus={handleFocus}
           secureTextEntry={secureText}
+          onChangeText={text => setFieldValue(name, text.toString())}
           {...rest}
         />
         {icon ? (
@@ -54,12 +68,19 @@ const InputLogin = (
           </TouchableOpacity>
         ) : null}
       </View>
+      {touched && errors && touched[name] && errors[name] ? (
+        <Text style={styles.error}>{errors[name]}</Text>
+      ) : null}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  viewIcon: {},
+  error: {
+    color: colors.red,
+    fontSize: fontSize.fontSize12,
+    marginTop: scale(5),
+  },
   viewInput: {
     borderWidth: 1,
     borderColor: colors.gray_C4C4C4,

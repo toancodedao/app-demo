@@ -5,6 +5,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import {LoginScreen} from './src/screen/Login';
 import routes from './src/routes/routes';
+import {SplashTaskScreen} from './src/screen/TaskManager';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +19,10 @@ const AppNavigator = () => {
           swipeEnabled: false,
         }}>
         <Stack.Screen name={routes.LOGIN_SCREEN} component={LoginScreen} />
+        <Stack.Screen
+          name={routes.SPLASH_TASK_SCREEN}
+          component={SplashTaskScreen}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
