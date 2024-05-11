@@ -1,6 +1,5 @@
 import {scale} from 'd4dpocket';
-import {observer} from 'mobx-react';
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   FlatList,
@@ -11,6 +10,7 @@ import {
 } from 'react-native';
 import {PanGestureHandler} from 'react-native-gesture-handler';
 import Animated, {
+  runOnJS,
   useAnimatedGestureHandler,
   useAnimatedStyle,
   useSharedValue,
@@ -20,19 +20,47 @@ import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import {useStore} from '../../../context';
 import {colors, fontSize} from '../../../theme';
 
 const deviceWidth = Dimensions.get('window').width;
 
 const threshold = -deviceWidth * 0.4;
 
-const Task = () => {
-  const {
-    taskStore: {task, updateCheckTask, deleteTask, refreshTask},
-  } = useStore();
+const data = [
+  {id: 1, name: 'Onboarding illustration', isCheck: false},
+  {id: 2, name: 'Wireframe ', isCheck: false},
+  {id: 3, name: '2 Screen UI design ', isCheck: false},
+  {id: 4, name: 'Task Management ', isCheck: false},
+];
 
-  const FlatListItem = ({item, onPress, onDelete}) => {
+const Task = () => {
+  const [dataItem, setDataItem] = useState(data);
+
+  const update = id => {
+    const updatedTasks = dataItem.map(taskItem => {
+      if (taskItem.id === id) {
+        return {...taskItem, isCheck: !taskItem?.isCheck};
+      } else {
+        return taskItem;
+      }
+    });
+    setDataItem(updatedTasks);
+  };
+
+  const deleteItem = id => {
+    let listTask = [...dataItem];
+    const index = listTask.findIndex(i => i.id === id);
+    if (index > -1) {
+      listTask.splice(index, 1);
+    }
+    setDataItem(listTask);
+  };
+
+  const refresh = () => {
+    setDataItem(data);
+  };
+
+  const FlatListItem = ({item, onPress}) => {
     const dragX = useSharedValue(0);
     const height = useSharedValue(65);
     const opacity = useSharedValue(1);
@@ -48,6 +76,7 @@ const Task = () => {
           dragX.value = withTiming(-deviceWidth);
           height.value = withTiming(0);
           opacity.value = withTiming(0);
+          runOnJS(deleteItem)(item?.id);
         }
       },
     });
@@ -64,10 +93,6 @@ const Task = () => {
         marginTop: opacity.value === 1 ? 10 : 0,
       };
     });
-
-    if (height?.value === 0) {
-      onDelete(item?.id);
-    }
 
     return (
       <PanGestureHandler onGestureEvent={gestureHander}>
@@ -88,7 +113,9 @@ const Task = () => {
             ]}>
             {item?.name}
           </Text>
-          <TouchableOpacity onPress={() => onPress(item?.id)}>
+          <TouchableOpacity
+            onPress={() => onPress(item?.id)}
+            style={{marginLeft: -scale(20)}}>
             {item?.isCheck ? (
               <AntDesign name={'checkcircle'} color={colors.black} size={30} />
             ) : (
@@ -105,19 +132,14 @@ const Task = () => {
       <View style={styles.row}>
         <View />
         <Text style={styles.txtTitle}>Drag left to delete task</Text>
-        <TouchableOpacity style={styles.btnReload} onPress={refreshTask}>
+        <TouchableOpacity style={styles.btnReload} onPress={refresh}>
           <Ionicons name={'reload'} size={25} color={colors.black} />
         </TouchableOpacity>
       </View>
       <FlatList
-        style={styles.flatlistStyle}
-        data={task}
+        data={dataItem}
         renderItem={({item}) => (
-          <FlatListItem
-            item={item}
-            onPress={updateCheckTask}
-            onDelete={deleteTask}
-          />
+          <FlatListItem item={item} onPress={update} onDelete={deleteItem} />
         )}
       />
     </View>
@@ -155,7 +177,6 @@ const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
     borderRadius: 10,
     marginHorizontal: 16,
     shadowOpacity: 0.2,
@@ -166,7 +187,8 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.gray_CFCAE4,
     borderBottomWidth: 1,
     justifyContent: 'space-between',
+    flex: 1,
   },
 });
 
-export default observer(Task);
+export default Task;
