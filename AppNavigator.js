@@ -6,6 +6,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {LoginScreen} from './src/screen/Login';
 import routes from './src/routes/routes';
 import {SplashTaskScreen} from './src/screen/TaskManager';
+import {HomeScreen} from './src/screen/Home';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +24,7 @@ const AppNavigator = () => {
           name={routes.SPLASH_TASK_SCREEN}
           component={SplashTaskScreen}
         />
+        <Stack.Screen name={routes.HOME_SCREEN} component={HomeScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
