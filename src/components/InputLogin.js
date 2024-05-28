@@ -36,6 +36,7 @@ const InputLogin = (
 
   const onBlur = () => {
     setIsFocused(false);
+    setLoading(false);
   };
 
   return (
